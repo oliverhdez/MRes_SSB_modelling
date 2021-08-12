@@ -7,13 +7,6 @@ from scipy.integrate import odeint
 import random
   
 
-# To do:
-# what about ace2 dynamics
-# run through several generations
-# think of a way of presenting the data. What about an overlay of all daughter cells on one graph and mother cells on another graph over 10/20 generations
-
-
-
 def find_index_from_time(t_obs,time,start_index=0):  
     i=start_index
     while i+1<len(t_obs):  

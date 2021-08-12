@@ -158,7 +158,7 @@ s0_ori=(ori_results[-1][-1][0],ori_results[-1][-1][1],((ori_results[-1][-1][2]*o
 s0_daughter=(ori_results[-1][-1][0],ori_results[-1][-1][1],((ori_results[-1][-1][2]*ori_results[-1][-1][-1]*avogadro*.1)/(avogadro*ori_results[-1][-1][-1]/2)),(ori_results[-1][-1][-1]/2))
 
 
-n_generations=10
+n_generations=1
 
 for i in range(n_generations):
     print("Simulating {} of {} generations...".format(i+1,n_generations))

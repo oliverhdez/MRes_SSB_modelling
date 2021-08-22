@@ -61,7 +61,7 @@ def gillespie(s0,t_obs_out,params):
     while t < t_final:
 
         types=['influx','TIR1_transcription','TIR1_rna_decay','TIR1_translation','RFP_transcription','RFP_rna_decay','RFP_translation',"leaky_degradation",'RFP_degradation','BFP_transcription','BFP_rna_decay','BFP_translation','growth']
-        rate_influx = ((permeability_IAAH*((fIAAH_w*conc_out - fIAAH_c*AUXIN)*(4.83597586205*(VOLUME**(2/3)))))/pm_thickness)#/VOLUME
+        rate_influx = (permeability_IAAH/pm_thickness)*((fIAAH_w*conc_out - fIAAH_c*AUXIN))#*(4.83597586205*(VOLUME**(2/3)))))/pm_thickness)#/VOLUME
         rate_TIR1_transcription = k_TIR1rnaexpression
         rate_TIR1_rna_decay = k_rnadecay*mRNA_TIR1
         rate_TIR1_translation = k_translation*mRNA_TIR1
@@ -88,6 +88,8 @@ def gillespie(s0,t_obs_out,params):
         next_event=1
 
         t=t+next_event
+
+
 
         AUXIN+= (np.random.poisson(rates[0]*VOLUME*avogadro*next_event))/(VOLUME*avogadro)
         mRNA_TIR1+= (np.random.poisson(rates[1]*VOLUME*avogadro*next_event))/(VOLUME*avogadro)
@@ -116,8 +118,8 @@ def gillespie(s0,t_obs_out,params):
         t_obs.append(t)
         s_obs.append(s)
 
-        if t >= 1200*2.5 and induction == "false":
-        	conc_out=0.5
+        if t >= 60*20 and induction == "false":
+        	conc_out=750
         	induction="true"
 
 
@@ -131,11 +133,11 @@ random.seed=1
 
 AUXIN0 = 0
 mRNA_TIR10 = 9.09364077747e-10
-TIR10 = 0.378
-mRNA_RFP0 = 9.09364077747e-10
-RFP0 = 0.378
-mRNA_BFP0 = 9.09364077747e-10
-BFP0 = 0.378
+TIR10 = 0.389
+mRNA_RFP0 = 1.8*9.09364077747e-10
+RFP0 = 0.47
+mRNA_BFP0 = 1.8*9.09364077747e-10
+BFP0 = 0.378*1.8
 VOLUME0 = 30*(10**(-15))
 
 permeability_IAAH = .389 # um*s^-1  
@@ -143,13 +145,13 @@ fIAAH_w = 0.25
 conc_out = 0  # Taken out of the AID2 paper Assuming an average intracellular concentration of auxin of 23.8 umol per litre, look at system 1 notes, 0.03808
 fIAAH_c = 0.0004
 pm_thickness = 0.0092 #um https://bionumbers.hms.harvard.edu/bionumber.aspx?s=n&v=0&id=108569#:~:text=%22The%20average%20thickness%20of%20the,al.%2C%201994).%22
-k_TIR1rnaexpression = 2.18862203686e-12 # based on average expression rate of RNAs in yeast
-k_RFPrnaexpression = 2.18862203686e-12 # based on average expression rate of RNAs in yeast
-k_BFPrnaexpression = 2.18862203686e-12 # based on average expression rate of RNAs in yeast
+k_TIR1rnaexpression = 2.43e-12 # based on average expression rate of RNAs in yeast
+k_RFPrnaexpression = 4e-12 # based on average expression rate of RNAs in yeast
+k_BFPrnaexpression = 4e-12 # based on average expression rate of RNAs in yeast
 k_rnadecay = 0.00240676104375 # per second, https://elifesciences.org/articles/32536
 k_translation = 52769.9671394 # um per liter per mRNA per second 
-k_leakydegrad = 3.056 * (10**(-4)) # umolar per second
-k_degrad = 5.28 * (10**(-6)) # umolar per second
+k_leakydegrad = 0.000150354734602 # umolar per second
+k_degrad = 4.1718216004e-09 # umolar per second
 percentage_sd = 0.00636 # Standard deviation of Sc BY4741: https://www.sciencedirect.com/science/article/pii/S2468501120300201
 avogadro = 6.022*(10**23)
 
@@ -178,6 +180,7 @@ n_runs=20
 
 for i in range(n_runs):
     print("Simulating {} of {} cells...".format(i+1,n_runs))
+    params= (permeability_IAAH, fIAAH_w, conc_out, fIAAH_c, pm_thickness, k_TIR1rnaexpression, k_RFPrnaexpression, k_BFPrnaexpression, k_rnadecay, k_translation, k_leakydegrad, k_degrad, percentage_sd,avogadro, kdil)
     gen=gillespie(s0,t_G1,params)
     results.append(gen)
 
@@ -193,6 +196,8 @@ ax3=fig.add_subplot(5,1,3)
 ax4=fig.add_subplot(5,1,4)
 ax5=fig.add_subplot(5,1,5)
 
+t_G1 /= 60
+
 # plot all runs at once (the .T transposes the matrix)
 ax1.plot(t_G1, results[:][...,0].T,'k:')
 ax2.plot(t_G1, results[:][...,2].T,'y:')
@@ -206,26 +211,28 @@ RFP_mean = np.average(results[:][...,4], axis=0)
 BFP_mean = np.average(results[:][...,6], axis=0)
 volume_mean = np.average(results[:][...,7], axis=0)
 
+print(RFP_mean[21*60]-RFP_mean[65*60])
+
 ax1.plot(t_G1, auxin_mean,'k',label="Auxin")
 ax2.plot(t_G1, TIR1_mean,'k',label="TIR1")
-ax3.plot(t_G1, RFP_mean,'k',label="RFP")
-ax4.plot(t_G1, BFP_mean,'k',label="BFP")
+ax3.plot(t_G1, RFP_mean,'k',label="mRuby2")
+ax4.plot(t_G1, BFP_mean,'k',label="mTagBFP2")
 ax5.plot(t_G1, volume_mean,'k',label="Volume")
 
 ax1.set_xlabel("Time, in minutes")
-ax1.set_ylabel("Concentration in umol per litre")
+ax1.set_ylabel("Concentration, uM")
 ax1.legend()
 
 ax2.set_xlabel("Time, in minutes")
-ax2.set_ylabel("Concentration in umol per litre")
+ax2.set_ylabel("Concentration, uM")
 ax2.legend()
 
 ax3.set_xlabel("Time, in minutes")
-ax3.set_ylabel("Concentration in umol per litre")
+ax3.set_ylabel("Concentration, uM")
 ax3.legend()
 
 ax4.set_xlabel("Time, in minutes")
-ax4.set_ylabel("Concentration in umol per litre")
+ax4.set_ylabel("Concentration, uM")
 ax4.legend()
 
 ax5.set_xlabel("Time, in minutes")

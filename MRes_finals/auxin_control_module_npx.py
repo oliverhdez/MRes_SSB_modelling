@@ -164,7 +164,7 @@ daughter_results=[]
 
 ori_results.append(gen0)
 s0_ori=(ori_results[-1][-1][0],ori_results[-1][-1][1],((ori_results[-1][-1][2]*ori_results[-1][-1][-1]*avogadro*.3)/(avogadro*ori_results[-1][-1][-1]/2)),ori_results[-1][-1][3],((ori_results[-1][-1][4]*ori_results[-1][-1][-1]*avogadro*0)/(avogadro*ori_results[-1][-1][-1]/2)),(ori_results[-1][-1][-1]/2))
-s0_daughter=(ori_results[-1][-1][0],ori_results[-1][-1][1],((ori_results[-1][-1][2]*ori_results[-1][-1][-1]*avogadro*.7)/(avogadro*ori_results[-1][-1][-1]/2)),ori_results[-1][-1][3],((ori_results[-1][-1][4]*ori_results[-1][-1][-1]*avogadro*2)/(avogadro*ori_results[-1][-1][-1]/2)),(ori_results[-1][-1][-1]/2))
+s0_daughter=(ori_results[-1][-1][0],ori_results[-1][-1][1],((ori_results[-1][-1][2]*ori_results[-1][-1][-1]*avogadro*.7)/(avogadro*ori_results[-1][-1][-1]/2)),ori_results[-1][-1][3],((ori_results[-1][-1][4]*ori_results[-1][-1][-1]*avogadro*1)/(avogadro*ori_results[-1][-1][-1]/2)),(ori_results[-1][-1][-1]/2))
 
 
 n_generations=30
@@ -188,7 +188,7 @@ daughter_results=np.array(daughter_results)
 fig=plt.figure(figsize=(12,8))
 fig.suptitle("Figure 4: Resulting daughter cells overlayed")
 fig2=plt.figure(figsize=(12,8))
-fig2.suptitle("Figure 3: Auxin dynamics in a mother cell over 30 cell divisions, using the endocytic recycling signal peptide")
+#fig2.suptitle("Figure 3: PIN2 and Auxin dynamics in one mother cell over 30 cell divisions and in the resulting daughter cells, using the endocytic recycling signal peptide")
 
 
 ax1=fig.add_subplot(3,2,1)
@@ -248,12 +248,10 @@ ax6.set_xlabel("Time, in minutes")
 ax6.set_ylabel("Volume in litres")
 ax6.legend()
 
-ax7=fig2.add_subplot(3,2,1)
-ax8=fig2.add_subplot(3,2,2)
-ax9=fig2.add_subplot(3,2,3)
-ax10=fig2.add_subplot(3,2,4)
-ax11=fig2.add_subplot(3,2,5)
-ax12=fig2.add_subplot(3,2,6)
+ax7=fig2.add_subplot(2,2,1)
+ax9=fig2.add_subplot(2,2,3)
+ax1=fig2.add_subplot(2,2,2)
+ax3=fig2.add_subplot(2,2,4)
 
 t_all = np.linspace(0,G1_length*n_generations+G1_length,G1_length*n_generations+G1_length)
 coefficients=[]
@@ -274,46 +272,38 @@ for i in range(6):
 
 t_all /= 91*60
 
+ax1.plot(t_G1, daughter_results[:][...,0].T,'g:')
+ax3.plot(t_G1, daughter_results[:][...,2].T,'y:')
+ax1.plot(t_G1, auxin_mean,'k',label="Auxin")
+ax3.plot(t_G1, pin2_mean,'k',label="PIN2")
+
+
 ax7.plot(t_all, ori_results[:][...,0].flatten().tolist(),'g:',label="Auxin")
-ax8.plot(t_all, ori_results[:][...,1].flatten().tolist(),'b:',label="PIN2_mRNA")
 ax9.plot(t_all, ori_results[:][...,2].flatten().tolist(),'y:',label="PIN2")
-ax10.plot(t_all, ori_results[:][...,3].flatten().tolist(),'m:',label="ACE2_mRNA")
-ax11.plot(t_all, ori_results[:][...,4].flatten().tolist(),'c:',label="ACE2")
-ax12.plot(t_all, ori_results[:][...,-1].flatten().tolist(),'r:',label="Volume")
+
 
 ax7.plot(t_all, y[0],'k')
-ax8.plot(t_all, y[1],'k')
 ax9.plot(t_all, y[2],'k')
-ax10.plot(t_all, y[3],'k')
-ax11.plot(t_all, y[4],'k')
-ax12.plot(t_all, y[-1],'k')
+
+ax1.set_xlabel("Time, in minutes")
+ax1.set_ylabel("Concentration in umol per litre")
+ax1.legend()
+ax1.set_title("Resulting daughter cells")
 
 
+ax3.set_xlabel("Time, in minutes")
+ax3.set_ylabel("Concentration in umol per litre")
+ax3.legend()
 
 ax7.set_xlabel("Number of divisions")
 ax7.set_ylabel("Concentration in umol per litre")
 ax7.legend()
+ax7.set_title("Mother cell over 30 divisions")
 
-ax8.set_xlabel("Number of divisions")
-ax8.set_ylabel("Concentration in umol per litre")
-ax8.legend()
 
 ax9.set_xlabel("Number of divisions")
 ax9.set_ylabel("Concentration in umol per litre")
 ax9.legend()
-
-ax10.set_xlabel("Number of divisions")
-ax10.set_ylabel("Concentration in umol per litre")
-ax10.legend()
-
-ax11.set_xlabel("Number of divisions")
-ax11.set_ylabel("Concentration in umol per litre")
-ax11.legend()
-
-ax12.set_xlabel("Number of divisions")
-ax12.set_ylabel("Volume in Litres")
-ax12.legend()
-
 
 
 

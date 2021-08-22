@@ -94,16 +94,16 @@ def assymetrical_cell_division(s0,t_obs_out,params):
         AUXIN+= (np.random.poisson(rates[0]*VOLUME*avogadro*next_event))/(VOLUME*avogadro)
         mRNA_TIR1+= (np.random.poisson(rates[1]*VOLUME*avogadro*next_event))/(VOLUME*avogadro)
         mRNA_TIR1-= (np.random.poisson(rates[2]*VOLUME*avogadro*next_event))/(VOLUME*avogadro)
-       	TIR1+= (np.random.poisson(rates[3]*VOLUME*avogadro*next_event))/(VOLUME*avogadro)
-       	mRNA_RFP+= (np.random.poisson(rates[4]*VOLUME*avogadro*next_event))/(VOLUME*avogadro)
+        TIR1+= (np.random.poisson(rates[3]*VOLUME*avogadro*next_event))/(VOLUME*avogadro)
+        mRNA_RFP+= (np.random.poisson(rates[4]*VOLUME*avogadro*next_event))/(VOLUME*avogadro)
         mRNA_RFP-= (np.random.poisson(rates[5]*VOLUME*avogadro*next_event))/(VOLUME*avogadro)
-       	RFP+= (np.random.poisson(rates[6]*VOLUME*avogadro*next_event))/(VOLUME*avogadro)
-       	RFP-= (np.random.poisson(rates[7]*VOLUME*avogadro*next_event))/(VOLUME*avogadro)
-       	RFP-= (np.random.poisson(rates[8]*VOLUME*avogadro*next_event))/(VOLUME*avogadro)
-       	mRNA_BFP+= (np.random.poisson(rates[9]*VOLUME*avogadro*next_event))/(VOLUME*avogadro)
+        RFP+= (np.random.poisson(rates[6]*VOLUME*avogadro*next_event))/(VOLUME*avogadro)
+        RFP-= (np.random.poisson(rates[7]*VOLUME*avogadro*next_event))/(VOLUME*avogadro)
+        RFP-= (np.random.poisson(rates[8]*VOLUME*avogadro*next_event))/(VOLUME*avogadro)
+        mRNA_BFP+= (np.random.poisson(rates[9]*VOLUME*avogadro*next_event))/(VOLUME*avogadro)
         mRNA_BFP-= (np.random.poisson(rates[10]*VOLUME*avogadro*next_event))/(VOLUME*avogadro)
-       	BFP+= (np.random.poisson(rates[11]*VOLUME*avogadro*next_event))/(VOLUME*avogadro)
-       	event_dilution = np.random.normal((rates[12]*next_event),(rate_growth*next_event*percentage_sd))
+        BFP+= (np.random.poisson(rates[11]*VOLUME*avogadro*next_event))/(VOLUME*avogadro)
+        event_dilution = np.random.normal((rates[12]*next_event),(rate_growth*next_event*percentage_sd))
         AUXIN-= AUXIN-((AUXIN*VOLUME)/(VOLUME+event_dilution))
         mRNA_TIR1-= mRNA_TIR1-((mRNA_TIR1*VOLUME)/(VOLUME+event_dilution))
         TIR1-= TIR1-((TIR1*VOLUME)/(VOLUME+event_dilution))
@@ -114,12 +114,12 @@ def assymetrical_cell_division(s0,t_obs_out,params):
         VOLUME+= event_dilution
 
         if t >= 60*20 and induction == "false":
-        	rfp_start=RFP
-        	conc_out=induction_level
-        	induction="true"
+            rfp_start=RFP
+            conc_out=induction_level
+            induction="true"
 
         if t == 60*65:
-        	rfp_end=RFP
+            rfp_end=RFP
 
         s = (AUXIN, mRNA_TIR1, TIR1, mRNA_RFP, RFP, mRNA_BFP, BFP, VOLUME)
 
@@ -167,7 +167,6 @@ G1_initial_volume=30*(10**(-15))
 G1_final_volume=60*(10**(-15))
 
 kdil = calc_dillution(G1_length,G1_initial_volume,G1_final_volume)
-print(kdil)
 
 s0 = (AUXIN0, mRNA_TIR10, TIR10, mRNA_RFP0, RFP0, mRNA_BFP0, BFP0, VOLUME0)
 params= (permeability_IAAH, fIAAH_w, conc_out, fIAAH_c, pm_thickness, k_TIR1rnaexpression, k_RFPrnaexpression, k_BFPrnaexpression, k_rnadecay, k_translation, k_leakydegrad, k_degrad, percentage_sd,avogadro, kdil)
@@ -181,174 +180,56 @@ k_TIR1rnaexpression=1e-14
 s0 = (AUXIN0, mRNA_TIR10, TIR10, mRNA_RFP0, RFP0, mRNA_BFP0, BFP0, VOLUME0)
 rfp_starts=[]
 rfp_ends=[]
+expression_levels=[]
 step=0
-for i in range(2):
-#while k_TIR1rnaexpression <= 1e-12:
-	induction_level=0
-	params=(permeability_IAAH, fIAAH_w, conc_out, fIAAH_c, pm_thickness, k_TIR1rnaexpression, k_RFPrnaexpression, k_BFPrnaexpression, k_rnadecay, k_translation, k_leakydegrad, k_degrad, percentage_sd,avogadro, kdil,induction_level)
-	calibrate=[]
-	round_results=[]
-	for i in range(10):
-		cal,dum,dummy = assymetrical_cell_division(s0,t_G1,params)
-		calibrate.append(cal)
-	calibrate = np.array(calibrate)
-	induction_level=750
-	params=(permeability_IAAH, fIAAH_w, conc_out, fIAAH_c, pm_thickness, k_TIR1rnaexpression, k_RFPrnaexpression, k_BFPrnaexpression, k_rnadecay, k_translation, k_leakydegrad, k_degrad, percentage_sd,avogadro, kdil,induction_level)
-	mRNA_TIR10=np.average(calibrate[:][...,1], axis=0)[-1]
-	TIR10=np.average(calibrate[:][...,2], axis=0)[-1]
-	mRNA_RFP0=np.average(calibrate[:][...,3], axis=0)[-1]
-	RFP0=np.average(calibrate[:][...,4], axis=0)[-1]
-	rfp_start_list=[]
-	rfp_end_list=[]
-	for i in range(10):
-		s0 = (AUXIN0, mRNA_TIR10, TIR10, mRNA_RFP0, RFP0, mRNA_BFP0, BFP0, VOLUME0)
-		gen,a,b=assymetrical_cell_division(s0,t_G1,params)
-		rfp_start_list.append(a)
-		rfp_end_list.append(b)
-	rfp_starts.append(sum(rfp_start_list)/len(rfp_start_list))
-	rfp_ends.append(sum(rfp_end_list)/len(rfp_end_list))
-	k_TIR1rnaexpression+=1e-14
-	step+=1
-	print("step: ",step)
+#for i in range(10):
+while k_TIR1rnaexpression <= 1e-12:
+    induction_level=0
+    params=(permeability_IAAH, fIAAH_w, conc_out, fIAAH_c, pm_thickness, k_TIR1rnaexpression, k_RFPrnaexpression, k_BFPrnaexpression, k_rnadecay, k_translation, k_leakydegrad, k_degrad, percentage_sd,avogadro, kdil,induction_level)
+    calibrate=[]
+    round_results=[]
+    for i in range(10):
+        cal,dum,dummy = assymetrical_cell_division(s0,t_G1,params)
+        calibrate.append(cal)
+    calibrate = np.array(calibrate)
+    induction_level=750
+    params=(permeability_IAAH, fIAAH_w, conc_out, fIAAH_c, pm_thickness, k_TIR1rnaexpression, k_RFPrnaexpression, k_BFPrnaexpression, k_rnadecay, k_translation, k_leakydegrad, k_degrad, percentage_sd,avogadro, kdil,induction_level)
+    mRNA_TIR10=np.average(calibrate[:][...,1], axis=0)[-1]
+    TIR10=np.average(calibrate[:][...,2], axis=0)[-1]
+    mRNA_RFP0=np.average(calibrate[:][...,3], axis=0)[-1]
+    RFP0=np.average(calibrate[:][...,4], axis=0)[-1]
+    rfp_start_list=[]
+    rfp_end_list=[]
+    for i in range(10):
+        s0 = (AUXIN0, mRNA_TIR10, TIR10, mRNA_RFP0, RFP0, mRNA_BFP0, BFP0, VOLUME0)
+        gen,a,b=assymetrical_cell_division(s0,t_G1,params)
+        rfp_start_list.append(a)
+        rfp_end_list.append(b)
+    rfp_starts.append(sum(rfp_start_list)/len(rfp_start_list))
+    rfp_ends.append(sum(rfp_end_list)/len(rfp_end_list))
+    expression_levels.append(k_TIR1rnaexpression)
+    k_TIR1rnaexpression+=1e-14
+    step+=1
+    print("step: ",step)
 
-
-#results=[]
-#n_runs=20
-
-#for i in range(n_runs):
-#    print("Simulating {} of {} cells...".format(i+1,n_runs))
-#    gen=assymetrical_cell_division(s0,t_G1,params)
-#    results.append(gen)
-
-results=np.array(results)
-#print(results[0])
-#print(results[0][...,0])
+print(rfp_starts)
+print(rfp_ends)
+rfp_differences = []
+zip_rfps=zip(rfp_starts,rfp_ends)
+for i, j in zip_rfps:
+    rfp_differences.append(i-j)
+optimum_expression=expression_levels[rfp_differences.index(max(rfp_differences))]
+print(max(rfp_differences))
+print(optimum_expression)
 
 fig=plt.figure(figsize=(12,8))
-fig2=plt.figure(figsize=(12,8))
 
-ax1=fig.add_subplot(5,1,1)
-ax2=fig.add_subplot(5,1,2)
-ax3=fig.add_subplot(5,1,3)
-ax4=fig.add_subplot(5,1,4)
-ax5=fig.add_subplot(5,1,5)
+ax1=fig.add_subplot(1,1,1)
 
-ax6=fig2.add_subplot(5,1,1)
-ax7=fig2.add_subplot(5,1,2)
-ax8=fig2.add_subplot(5,1,3)
-ax9=fig2.add_subplot(5,1,4)
-ax10=fig2.add_subplot(5,1,5)
+ax1.plot(expression_levels, rfp_differences,'k',label="Drop in RFP concentration")
 
-t_G1 /= 60
-
-# plot all runs at once (the .T transposes the matrix)
-ax1.plot(t_G1, results[:][...,0].T,'k:')
-ax2.plot(t_G1, results[:][...,1].T,'y:')
-ax3.plot(t_G1, results[:][...,2].T,'r:')
-ax4.plot(t_G1, results[:][...,3].T,'b:')
-ax5.plot(t_G1, results[:][...,4].T,'g:')
-
-auxin_mean = np.average(results[:][...,0], axis=0)
-TIR1_mean = np.average(results[:][...,1], axis=0)
-RFP_mean = np.average(results[:][...,2],axis=0)
-BFP_mean = np.average(results[:][...,3], axis=0)
-volume_mean = np.average(results[:][...,4], axis=0)
-
-print(np.average(RFP_mean))
-
-
-ax1.plot(t_G1, auxin_mean,'k',label="Auxin")
-ax2.plot(t_G1, TIR1_mean,'k',label="TIR1_mRNA")
-ax3.plot(t_G1, RFP_mean,'k',label="TIR1")
-ax4.plot(t_G1, BFP_mean,'k',label="RFP_mRNA")
-ax5.plot(t_G1, volume_mean,'k',label="RFP")
-
-ax6.plot(t_G1, results[:][...,0][-1],'k',label="Auxin")
-ax7.plot(t_G1, results[:][...,1][-1],'y',label="TIR1_mRNA")
-ax8.plot(t_G1, results[:][...,2][-1],'r',label="TIR1")
-ax9.plot(t_G1, results[:][...,3][-1],'b',label="RFP_mRNA")
-ax10.plot(t_G1, results[:][...,4][-1],'g',label="RFP")
-
-
-ax1.set_xlabel("Time, in minutes")
-ax1.set_ylabel("Concentration in umol per litre")
+ax1.set_xlabel("Expression level of TIR1 mRNA, in umol per litre")
+ax1.set_ylabel("Drop in RFP concentration over 45 mins, in umol per litre")
 ax1.legend()
 
-ax2.set_xlabel("Time, in minutes")
-ax2.set_ylabel("Concentration in umol per litre")
-ax2.legend()
-
-ax3.set_xlabel("Time, in minutes")
-ax3.set_ylabel("Concentration in umol per litre")
-ax3.legend()
-
-ax4.set_xlabel("Time, in minutes")
-ax4.set_ylabel("Concentration in umol per litre")
-ax4.legend()
-
-ax5.set_xlabel("Time, in minutes")
-ax5.set_ylabel("Concentration in umol per litre")
-ax5.legend()
-
-ax6.set_xlabel("Time, in minutes")
-ax6.set_ylabel("Concentration in umol per litre")
-ax6.legend()
-
-ax7.set_xlabel("Time, in minutes")
-ax7.set_ylabel("Concentration in umol per litre")
-ax7.legend()
-
-ax8.set_xlabel("Time, in minutes")
-ax8.set_ylabel("Concentration in umol per litre")
-ax8.legend()
-
-ax9.set_xlabel("Time, in minutes")
-ax9.set_ylabel("Concentration in umol per litre")
-ax9.legend()
-
-ax10.set_xlabel("Time, in minutes")
-ax10.set_ylabel("Concentration in umol per litre")
-ax10.legend()
-
-
-#ax1=fig2.add_subplot(5,1,1)
-#ax2=fig2.add_subplot(5,1,2)
-#ax3=fig2.add_subplot(5,1,3)
-#ax4=fig2.add_subplot(5,1,4)
-#ax5=fig2.add_subplot(5,1,5)
-
-
-#t_all = np.linspace(0,G1_length*n_generations+G1_length,G1_length*n_generations+G1_length)
-
-#ax1.plot(t_all, ori_results[:][...,0].flatten().tolist(),'g',label="Auxin")
-#ax2.plot(t_all, ori_results[:][...,2].flatten().tolist(),'b',label="TIR1")
-#ax3.plot(t_all, ori_results[:][...,4].flatten().tolist(),'y',label="RFP")
-#ax4.plot(t_all, ori_results[:][...,6].flatten().tolist(),'r',label="BFP")
-#ax5.plot(t_all, ori_results[:][...,7].flatten().tolist(),'r',label="Volume")
-
-#ax1.set_xlabel("Time, in minutes")
-#ax1.set_ylabel("Concentration in umol per litre")
-#ax1.legend()
-
-#ax2.set_xlabel("Time, in minutes")
-#ax2.set_ylabel("Concentration in umol per litre")
-#ax2.legend()
-
-#ax3.set_xlabel("Time, in minutes")
-#ax3.set_ylabel("Concentration in umol per litre")
-#ax3.legend()
-
-#ax4.set_xlabel("Time, in minutes")
-#ax4.set_ylabel("Concentration in umol per litre")
-#ax4.legend()
-
-#ax5.set_xlabel("Time, in minutes")
-#ax5.set_ylabel("Volume in litres")
-#ax5.legend()
-
-
-
-
 plt.show()
-
-

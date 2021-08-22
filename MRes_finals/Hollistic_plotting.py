@@ -162,7 +162,7 @@ VOLUME0 = 30*(10**(-15))
 
 permeability_IAAH = .389 # um*s^-1  
 fIAAH_w = 0.25
-conc_out = 5  # Taken out of the AID2 paper Assuming an average intracellular concentration of auxin of 23.8 umol per litre, look at system 1 notes, 0.03808
+conc_out = 750  # Taken out of the AID2 paper Assuming an average intracellular concentration of auxin of 23.8 umol per litre, look at system 1 notes, 0.03808
 fIAAH_c = 0.0004
 pm_thickness = 0.0092 #um https://bionumbers.hms.harvard.edu/bionumber.aspx?s=n&v=0&id=108569#:~:text=%22The%20average%20thickness%20of%20the,al.%2C%201994).%22
 permeability_IAA = 1.081*(10**(-1)) # um*s^-1 per umol/L of PIN2
@@ -210,18 +210,14 @@ ori_results.append(gen0)
 s0_ori=(ori_results[-1][-1][0],ori_results[-1][-1][1],((ori_results[-1][-1][2]*ori_results[-1][-1][-1]*avogadro*.3)/(avogadro*ori_results[-1][-1][-1]/2)),ori_results[-1][-1][3],((ori_results[-1][-1][4]*ori_results[-1][-1][-1]*avogadro*0)/(avogadro*ori_results[-1][-1][-1]/2)),ori_results[-1][-1][5],ori_results[-1][-1][6],ori_results[-1][-1][7],ori_results[-1][-1][8],ori_results[-1][-1][9],ori_results[-1][-1][10],(ori_results[-1][-1][-1]/2))
 s0_daughter=(ori_results[-1][-1][0],ori_results[-1][-1][1],((ori_results[-1][-1][2]*ori_results[-1][-1][-1]*avogadro*.7)/(avogadro*ori_results[-1][-1][-1]/2)),ori_results[-1][-1][3],((ori_results[-1][-1][4]*ori_results[-1][-1][-1]*avogadro*1)/(avogadro*ori_results[-1][-1][-1]/2)),ori_results[-1][-1][5],ori_results[-1][-1][6],ori_results[-1][-1][7],ori_results[-1][-1][8],ori_results[-1][-1][9],ori_results[-1][-1][10],(ori_results[-1][-1][-1]/2))
 
-print(len(s0_ori),len(s0_daughter))
+n_runs=5
 
-n_generations=1
-
-for i in range(n_generations):
-    print("Simulating {} of {} generations...".format(i+1,n_generations))
+for i in range(n_runs):
+    print("Simulating {} of {} runs...".format(i+1,n_runs))
     d2=gillespie(s0_daughter,t_G1,params_daughter)
     daughter_results.append(d2)
     d1=gillespie(s0_ori,t_G1,params)
     ori_results.append(d1)
-    s0_ori=(ori_results[-1][-1][0],ori_results[-1][-1][1],((ori_results[-1][-1][2]*ori_results[-1][-1][-1]*avogadro*.3)/(avogadro*ori_results[-1][-1][-1]/2)),ori_results[-1][-1][3],((ori_results[-1][-1][4]*ori_results[-1][-1][-1]*avogadro*0)/(avogadro*ori_results[-1][-1][-1]/2)),ori_results[-1][-1][5],ori_results[-1][-1][6],ori_results[-1][-1][7],ori_results[-1][-1][8],ori_results[-1][-1][9],ori_results[-1][-1][10],(ori_results[-1][-1][-1]/2))
-    s0_daughter=(ori_results[-1][-1][0],ori_results[-1][-1][1],((ori_results[-1][-1][2]*ori_results[-1][-1][-1]*avogadro*.7)/(avogadro*ori_results[-1][-1][-1]/2)),ori_results[-1][-1][3],((ori_results[-1][-1][4]*ori_results[-1][-1][-1]*avogadro*1)/(avogadro*ori_results[-1][-1][-1]/2)),ori_results[-1][-1][5],ori_results[-1][-1][6],ori_results[-1][-1][7],ori_results[-1][-1][8],ori_results[-1][-1][9],ori_results[-1][-1][10],(ori_results[-1][-1][-1]/2))
 
 
 
@@ -231,71 +227,35 @@ daughter_results=np.array(daughter_results)
 #print(daughter_results[0][...,0])
 
 mother1=plt.figure(figsize=(12,8))
-mother1.suptitle("graphs 1 for daughter cell")
-mother2=plt.figure(figsize=(12,8))
-mother2.suptitle("graphs 2 for daughter cell")
+mother1.suptitle("daughter cell")
+
 
 daughter1=plt.figure(figsize=(12,8))
-daughter1.suptitle("graphs 1 for mother cells")
-daughter2=plt.figure(figsize=(12,8))
-daughter2.suptitle("graphs 2 for mother cells")
+daughter1.suptitle("mother cells")
 
-ax1=mother1.add_subplot(3,2,1)
-ax2=mother1.add_subplot(3,2,2)
-ax3=mother1.add_subplot(3,2,3)
-ax4=mother1.add_subplot(3,2,4)
-ax5=mother1.add_subplot(3,2,5)
-ax6=mother1.add_subplot(3,2,6)
-ax21=mother2.add_subplot(3,2,1)
-ax22=mother2.add_subplot(3,2,2)
-ax23=mother2.add_subplot(3,2,3)
-ax24=mother2.add_subplot(3,2,4)
-ax25=mother2.add_subplot(3,2,5)
-ax26=mother2.add_subplot(3,2,6)
+
+ax1=mother1.add_subplot(2,2,1)
+ax2=mother1.add_subplot(2,2,2)
+ax3=mother1.add_subplot(2,2,3)
+ax4=mother1.add_subplot(2,2,4)
 
 t_G1/=60
 
-
 # plot all runs at once (the .T transposes the matrix)
 ax1.plot(t_G1, daughter_results[:][...,0].T,'g:')
-ax2.plot(t_G1, daughter_results[:][...,1].T,'b:')
-ax3.plot(t_G1, daughter_results[:][...,2].T,'y:')
-ax4.plot(t_G1, daughter_results[:][...,3].T,'m:')
-ax5.plot(t_G1, daughter_results[:][...,4].T,'c:')
-ax6.plot(t_G1, daughter_results[:][...,-1].T,'r:')
-ax21.plot(t_G1, daughter_results[:][...,5].T,'g:')
-ax22.plot(t_G1, daughter_results[:][...,6].T,'b:')
-ax23.plot(t_G1, daughter_results[:][...,7].T,'y:')
-ax24.plot(t_G1, daughter_results[:][...,8].T,'m:')
-ax25.plot(t_G1, daughter_results[:][...,9].T,'c:')
-ax26.plot(t_G1, daughter_results[:][...,10].T,'r:')
-
+ax2.plot(t_G1, daughter_results[:][...,2].T,'b:')
+ax3.plot(t_G1, daughter_results[:][...,8].T,'y:')
+ax4.plot(t_G1, daughter_results[:][...,-1].T,'m:')
 
 auxin_mean = np.average(daughter_results[:][...,0], axis=0,)
-mrna_mean = np.average(daughter_results[:][...,1], axis=0)
-pin2_mean = np.average(daughter_results[:][...,2], axis=0)
-ace2_mrna_mean = np.average(daughter_results[:][...,3], axis=0)
-ace2_mean = np.average(daughter_results[:][...,4], axis=0)
-volume_mean = np.average(daughter_results[:][...,-1], axis=0)
-TIR1_mRNA_mean = np.average(daughter_results[:][...,5], axis=0,)
-TIR1_mean = np.average(daughter_results[:][...,6], axis=0)
-RFP_mRNA_mean = np.average(daughter_results[:][...,7], axis=0)
+PIN2_mean = np.average(daughter_results[:][...,2], axis=0)
 RFP_mean = np.average(daughter_results[:][...,8], axis=0)
-BFP_mRNA_mean = np.average(daughter_results[:][...,9], axis=0)
-BFP_mean = np.average(daughter_results[:][...,10], axis=0)
+volume_mean = np.average(daughter_results[:][...,-1], axis=0)
 
 ax1.plot(t_G1, auxin_mean,'k',label="Auxin")
-ax2.plot(t_G1, mrna_mean,'k',label="PIN2_mRNA")
-ax3.plot(t_G1, pin2_mean,'k',label="PIN2")
-ax4.plot(t_G1, ace2_mrna_mean,'k',label="ACE2_mRNA")
-ax5.plot(t_G1, ace2_mean,'k',label="ACE2")
-ax6.plot(t_G1, volume_mean,'k',label="Volume")
-ax21.plot(t_G1, TIR1_mRNA_mean,'k',label="TIR1 mRNA")
-ax22.plot(t_G1, TIR1_mean,'k',label="TIR1")
-ax23.plot(t_G1, RFP_mRNA_mean,'k',label="RFP mRNA")
-ax24.plot(t_G1, RFP_mean,'k',label="RFP")
-ax25.plot(t_G1, BFP_mRNA_mean,'k',label="BFP mRNA")
-ax26.plot(t_G1, BFP_mean,'k',label="BFP")
+ax2.plot(t_G1, PIN2_mean,'k',label="PIN2")
+ax3.plot(t_G1, RFP_mean,'k',label="RFP")
+ax4.plot(t_G1, volume_mean,'k',label="Volume")
 
 ax1.set_xlabel("Time, in minutes")
 ax1.set_ylabel("Concentration in umol per litre")
@@ -313,102 +273,26 @@ ax4.set_xlabel("Time, in minutes")
 ax4.set_ylabel("Concentration in umol per litre")
 ax4.legend()
 
-ax5.set_xlabel("Time, in minutes")
-ax5.set_ylabel("Concentration in umol per litre")
-ax5.legend()
 
-ax6.set_xlabel("Time, in minutes")
-ax6.set_ylabel("Volume in litres")
-ax6.legend()
+ax7=daughter1.add_subplot(2,2,1)
+ax8=daughter1.add_subplot(2,2,2)
+ax9=daughter1.add_subplot(2,2,3)
+ax10=daughter1.add_subplot(2,2,4)
 
-ax21.set_xlabel("Time, in minutes")
-ax21.set_ylabel("Concentration in umol per litre")
-ax21.legend()
+ax7.plot(t_G1, ori_results[:][...,0].T,'g:')
+ax8.plot(t_G1, ori_results[:][...,2].T,'b:')
+ax9.plot(t_G1, ori_results[:][...,8].T,'y:')
+ax10.plot(t_G1, ori_results[:][...,-1].T,'m:')
 
-ax22.set_xlabel("Time, in minutes")
-ax22.set_ylabel("Concentration in umol per litre")
-ax22.legend()
+auxin_mean = np.average(ori_results[:][...,0], axis=0,)
+PIN2_mean = np.average(ori_results[:][...,2], axis=0)
+RFP_mean = np.average(ori_results[:][...,8], axis=0)
+volume_mean = np.average(ori_results[:][...,-1], axis=0)
 
-ax23.set_xlabel("Time, in minutes")
-ax23.set_ylabel("Concentration in umol per litre")
-ax23.legend()
-
-ax24.set_xlabel("Time, in minutes")
-ax24.set_ylabel("Concentration in umol per litre")
-ax24.legend()
-
-ax25.set_xlabel("Time, in minutes")
-ax25.set_ylabel("Concentration in umol per litre")
-ax25.legend()
-
-ax26.set_xlabel("Time, in minutes")
-ax26.set_ylabel("Volume in litres")
-ax26.legend()
-
-ax7=daughter1.add_subplot(3,2,1)
-ax8=daughter1.add_subplot(3,2,2)
-ax9=daughter1.add_subplot(3,2,3)
-ax10=daughter1.add_subplot(3,2,4)
-ax11=daughter1.add_subplot(3,2,5)
-ax12=daughter1.add_subplot(3,2,6)
-
-ax27=daughter2.add_subplot(3,2,1)
-ax28=daughter2.add_subplot(3,2,2)
-ax29=daughter2.add_subplot(3,2,3)
-ax210=daughter2.add_subplot(3,2,4)
-ax211=daughter2.add_subplot(3,2,5)
-ax212=daughter2.add_subplot(3,2,6)
-
-t_all = np.linspace(0,G1_length*n_generations+G1_length,G1_length*n_generations+G1_length)
-coefficients=[]
-degrees = [6,5,5,1,5,1,1,1,4,1,1,1]
-for i in range(len(degrees)):
-    c = np.polyfit(t_all,ori_results[:][...,i].flatten().tolist(),degrees[i])
-    coefficients.append(c)
-auxin_fit = []
-pin2_mrna_fit = []
-pin2_fit = []
-ace2_mrna_fit = []
-ace2_fit = []
-TIR1_mrna_fit = []
-TIR1_fit = []
-RFP_mrna_fit = []
-RFP_fit = []
-BFP_mrna_fit = []
-BFP_fit = []
-volume_fit = []
-y=[auxin_fit,pin2_mrna_fit,pin2_fit,ace2_mrna_fit,ace2_fit,TIR1_mrna_fit,TIR1_fit,RFP_mrna_fit,RFP_fit,BFP_mrna_fit,BFP_fit,volume_fit]
-for i in range(12):
-    poly=np.poly1d(coefficients[i])
-    y[i]=poly(t_all)
-
-t_all /= 91*60
-
-ax7.plot(t_all, ori_results[:][...,0].flatten().tolist(),'g:',label="Auxin")
-ax8.plot(t_all, ori_results[:][...,1].flatten().tolist(),'b:',label="PIN2_mRNA")
-ax9.plot(t_all, ori_results[:][...,2].flatten().tolist(),'y:',label="PIN2")
-ax10.plot(t_all, ori_results[:][...,3].flatten().tolist(),'m:',label="ACE2_mRNA")
-ax11.plot(t_all, ori_results[:][...,4].flatten().tolist(),'c:',label="ACE2")
-ax12.plot(t_all, ori_results[:][...,-1].flatten().tolist(),'r:',label="Volume")
-ax27.plot(t_all, ori_results[:][...,5].flatten().tolist(),'g:',label="TIR1_mRNA")
-ax28.plot(t_all, ori_results[:][...,6].flatten().tolist(),'b:',label="TIR1")
-ax29.plot(t_all, ori_results[:][...,7].flatten().tolist(),'y:',label="RFP_mRNA")
-ax210.plot(t_all, ori_results[:][...,8].flatten().tolist(),'m:',label="RFP")
-ax211.plot(t_all, ori_results[:][...,9].flatten().tolist(),'c:',label="BFP_mRNA")
-ax212.plot(t_all, ori_results[:][...,10].flatten().tolist(),'r:',label="BFP")
-
-ax7.plot(t_all, y[0],'k')
-ax8.plot(t_all, y[1],'k')
-ax9.plot(t_all, y[2],'k')
-ax10.plot(t_all, y[3],'k')
-ax11.plot(t_all, y[4],'k')
-ax12.plot(t_all, y[-1],'k')
-ax27.plot(t_all, y[5],'k')
-ax28.plot(t_all, y[6],'k')
-ax29.plot(t_all, y[7],'k')
-ax210.plot(t_all, y[8],'k')
-ax211.plot(t_all, y[9],'k')
-ax212.plot(t_all, y[10],'k')
+ax7.plot(t_G1, auxin_mean,'k',label="Auxin")
+ax8.plot(t_G1, PIN2_mean,'k',label="PIN2")
+ax9.plot(t_G1, RFP_mean,'k',label="RFP")
+ax10.plot(t_G1, volume_mean,'k',label="Volume")
 
 ax7.set_xlabel("Number of divisions")
 ax7.set_ylabel("Concentration in umol per litre")
@@ -425,38 +309,6 @@ ax9.legend()
 ax10.set_xlabel("Number of divisions")
 ax10.set_ylabel("Concentration in umol per litre")
 ax10.legend()
-
-ax11.set_xlabel("Number of divisions")
-ax11.set_ylabel("Concentration in umol per litre")
-ax11.legend()
-
-ax12.set_xlabel("Number of divisions")
-ax12.set_ylabel("Volume in Litres")
-ax12.legend()
-
-ax27.set_xlabel("Number of divisions")
-ax27.set_ylabel("Concentration in umol per litre")
-ax27.legend()
-
-ax28.set_xlabel("Number of divisions")
-ax28.set_ylabel("Concentration in umol per litre")
-ax28.legend()
-
-ax29.set_xlabel("Number of divisions")
-ax29.set_ylabel("Concentration in umol per litre")
-ax29.legend()
-
-ax210.set_xlabel("Number of divisions")
-ax210.set_ylabel("Concentration in umol per litre")
-ax210.legend()
-
-ax211.set_xlabel("Number of divisions")
-ax211.set_ylabel("Concentration in umol per litre")
-ax211.legend()
-
-ax212.set_xlabel("Number of divisions")
-ax212.set_ylabel("Volume in Litres")
-ax212.legend()
 
 plt.show()
 

@@ -4,13 +4,13 @@ import math
 from scipy.integrate import odeint
 import random
 
-# units: µmol/l for concentration, litre for volume , µm for distance (diffusions)
+# units: umol/l for concentration, litre for volume , um for distance (diffusions)
 
 def sdot_mother(s,t,params):
 	AUXIN, REPRESSOR, VIOLACEIN, PIN2, VOLUME  = s
-	permeability_IAAH, fIAAH_w, conc_out, fIAAH_c, pm_thickness, permeability_IAA, Nµ, kdil, kconstitutive, kdegrad, kinhibition = params
+	permeability_IAAH, fIAAH_w, conc_out, fIAAH_c, pm_thickness, permeability_IAA, Nu, kdil, kconstitutive, kdegrad, kinhibition = params
 
-	dAUXIN = ((permeability_IAAH*((fIAAH_w*conc_out - fIAAH_c*AUXIN)*(4.83597586205*(VOLUME**(2/3)))))/pm_thickness)/VOLUME - permeability_IAA*PIN2*Nµ*(1-fIAAH_c)*AUXIN - AUXIN*kdil
+	dAUXIN = ((permeability_IAAH*((fIAAH_w*conc_out - fIAAH_c*AUXIN)*(4.83597586205*(VOLUME**(2/3)))))/pm_thickness)/VOLUME - permeability_IAA*PIN2*Nu*(1-fIAAH_c)*AUXIN - AUXIN*kdil
 	dREPRESSOR = kconstitutive - (kdegrad*AUXIN*REPRESSOR) - REPRESSOR*kdil #/(AUXIN+Ksaturation when you figureout hill coefficients)
 	dVIOLACEIN = (kconstitutive/(1+(REPRESSOR/kinhibition))) - VIOLACEIN*kdil
 	dPIN2 = - PIN2*kdil
@@ -22,9 +22,9 @@ def sdot_mother(s,t,params):
 
 def sdot_budding(s,t,params):
 	AUXIN, REPRESSOR, VIOLACEIN, PIN2, VOLUME  = s
-	permeability_IAAH, fIAAH_w, conc_out, fIAAH_c, pm_thickness, permeability_IAA, Nµ, kdil, kconstitutive, kdegrad, kinhibition = params
+	permeability_IAAH, fIAAH_w, conc_out, fIAAH_c, pm_thickness, permeability_IAA, Nu, kdil, kconstitutive, kdegrad, kinhibition = params
 
-	dAUXIN = ((permeability_IAAH*((fIAAH_w*conc_out - fIAAH_c*AUXIN)*(4.83597586205*(VOLUME**(2/3)))))/pm_thickness)/VOLUME - permeability_IAA*PIN2*Nµ*(1-fIAAH_c)*AUXIN - AUXIN*kdil # Permeability should increase with surface area, not decrease
+	dAUXIN = ((permeability_IAAH*((fIAAH_w*conc_out - fIAAH_c*AUXIN)*(4.83597586205*(VOLUME**(2/3)))))/pm_thickness)/VOLUME - permeability_IAA*PIN2*Nu*(1-fIAAH_c)*AUXIN - AUXIN*kdil # Permeability should increase with surface area, not decrease
 	dREPRESSOR = kconstitutive - kdegrad*AUXIN*REPRESSOR - REPRESSOR*kdil
 	dVIOLACEIN = (kconstitutive/(1+(REPRESSOR/kinhibition))) - VIOLACEIN*kdil
 	dPIN2 = - PIN2*kdil
@@ -37,9 +37,9 @@ def sdot_budding(s,t,params):
 
 def sdot_daughter1a(s,t,params):
 	AUXIN, REPRESSOR, VIOLACEIN, PIN2, VOLUME  = s
-	permeability_IAAH, fIAAH_w, conc_out, fIAAH_c, pm_thickness, permeability_IAA, Nµ, kdil, kconstitutive, kdegrad, kinhibition = params
+	permeability_IAAH, fIAAH_w, conc_out, fIAAH_c, pm_thickness, permeability_IAA, Nu, kdil, kconstitutive, kdegrad, kinhibition = params
 
-	dAUXIN = ((permeability_IAAH*((fIAAH_w*conc_out - fIAAH_c*AUXIN)*(4.83597586205*(VOLUME**(2/3)))))/pm_thickness)/VOLUME - permeability_IAA*PIN2*Nµ*(1-fIAAH_c)*AUXIN - AUXIN*kdil
+	dAUXIN = ((permeability_IAAH*((fIAAH_w*conc_out - fIAAH_c*AUXIN)*(4.83597586205*(VOLUME**(2/3)))))/pm_thickness)/VOLUME - permeability_IAA*PIN2*Nu*(1-fIAAH_c)*AUXIN - AUXIN*kdil
 	dREPRESSOR = kconstitutive - kdegrad*AUXIN*REPRESSOR - REPRESSOR*kdil
 	dVIOLACEIN = (kconstitutive/(1+(REPRESSOR/kinhibition))) - VIOLACEIN*kdil
 	dPIN2 = - PIN2*kdil
@@ -51,9 +51,9 @@ def sdot_daughter1a(s,t,params):
 
 def sdot_daughter1b(s,t,params):
 	AUXIN, REPRESSOR, VIOLACEIN, PIN2, VOLUME  = s
-	permeability_IAAH, fIAAH_w, conc_out, fIAAH_c, pm_thickness, permeability_IAA, Nµ, kdil, kconstitutive, kdegrad, kinhibition = params
+	permeability_IAAH, fIAAH_w, conc_out, fIAAH_c, pm_thickness, permeability_IAA, Nu, kdil, kconstitutive, kdegrad, kinhibition = params
 
-	dAUXIN = ((permeability_IAAH*((fIAAH_w*conc_out - fIAAH_c*AUXIN)*(4.83597586205*(VOLUME**(2/3)))))/pm_thickness)/VOLUME - permeability_IAA*PIN2*Nµ*(1-fIAAH_c)*AUXIN - AUXIN*kdil
+	dAUXIN = ((permeability_IAAH*((fIAAH_w*conc_out - fIAAH_c*AUXIN)*(4.83597586205*(VOLUME**(2/3)))))/pm_thickness)/VOLUME - permeability_IAA*PIN2*Nu*(1-fIAAH_c)*AUXIN - AUXIN*kdil
 	dREPRESSOR = kconstitutive - kdegrad*AUXIN*REPRESSOR - REPRESSOR*kdil
 	dVIOLACEIN = (kconstitutive/(1+(REPRESSOR/kinhibition))) - VIOLACEIN*kdil
 	dPIN2 = kconstitutive - PIN2*kdil
@@ -75,17 +75,17 @@ def assymetrical_cell_division():
 #	- Total number of mRNAs per cell: 15000
 #	- average number of mRNAs per transcript: 4000
 #	- Therefore, average number of proteins per gene: 9500
-#	- That means on average 0.378 µmol/L of each protein per gene
+#	- That means on average 0.378 umol/L of each protein per gene
 
-	permeability_IAAH = .389 # µm*s^-1  
+	permeability_IAAH = .389 # um*s^-1  
 	fIAAH_w = 0.25
-	conc_out = 0.5  # Taken out of the AID2 paper Assuming an average intracellular concentration of auxin of 23.8 µmol per litre, look at system 1 notes, 0.03808
+	conc_out = 0.5  # Taken out of the AID2 paper Assuming an average intracellular concentration of auxin of 23.8 umol per litre, look at system 1 notes, 0.03808
 	fIAAH_c = 0.0004
-	pm_thickness = 0.0092 #µm https://bionumbers.hms.harvard.edu/bionumber.aspx?s=n&v=0&id=108569#:~:text=%22The%20average%20thickness%20of%20the,al.%2C%201994).%22
-	permeability_IAA = 1.081*(10**3) # µm*s^-1 per µmol/L of PIN2
-	Nµ = 5.02
+	pm_thickness = 0.0092 #um https://bionumbers.hms.harvard.edu/bionumber.aspx?s=n&v=0&id=108569#:~:text=%22The%20average%20thickness%20of%20the,al.%2C%201994).%22
+	permeability_IAA = 1.081*(10**3) # um*s^-1 per umol/L of PIN2
+	Nu = 5.02
 	kconstitutive = 9*(10**(-5)) # based on the average expression rate of proteins in yeast
-	kdegrad = 5.28 * (10**(-6)) # µmolar per second
+	kdegrad = 5.28 * (10**(-6)) # umolar per second
 	kinhibition = 0.003818 # Made up "realistic value", if repressor at steady state, promoter is 99% repressed
 
 	AUXIN_0 = 0
@@ -105,7 +105,7 @@ def assymetrical_cell_division():
 
 
 	s0_G1 = AUXIN_0, REPRESSOR_0, VIOLACEIN_0, PIN2_0, VOLUME_0
-	params = permeability_IAAH, fIAAH_w, conc_out, fIAAH_c, pm_thickness, permeability_IAA, Nµ, kdil, kconstitutive, kdegrad, kinhibition
+	params = permeability_IAAH, fIAAH_w, conc_out, fIAAH_c, pm_thickness, permeability_IAA, Nu, kdil, kconstitutive, kdegrad, kinhibition
 
 	s_G1 = odeint(sdot_mother, s0_G1, t_G1, args=(params,))
 
@@ -124,7 +124,7 @@ def assymetrical_cell_division():
 	kdil = calc_dillution(bud_length,bud_initial_volume,bud_final_volume)
 
 	s0_bud = AUXIN_G1[-1], REPRESSOR_G1[-1], VIOLACEIN_G1[-1], PIN2_G1[-1], bud_initial_volume
-	params = permeability_IAAH, fIAAH_w, conc_out, fIAAH_c, pm_thickness, permeability_IAA, Nµ, kdil, kconstitutive, kdegrad, kinhibition
+	params = permeability_IAAH, fIAAH_w, conc_out, fIAAH_c, pm_thickness, permeability_IAA, Nu, kdil, kconstitutive, kdegrad, kinhibition
 
 	s_bud = odeint(sdot_budding, s0_bud, t_bud, args=(params,))
 
@@ -145,7 +145,7 @@ def assymetrical_cell_division():
 	daughter1a_split=((bud_final_volume)*(daughter1a_initial_volume/bud_final_volume))/daughter1a_initial_volume
 
 	s0_daughter1a = AUXIN_bud[-1]*daughter1a_split, REPRESSOR_bud[-1]*daughter1a_split, VIOLACEIN_bud[-1]*daughter1a_split, ((PIN2_bud[-1]*bud_final_volume)/daughter1a_initial_volume), daughter1a_initial_volume
-	params = permeability_IAAH, fIAAH_w, conc_out, fIAAH_c, pm_thickness, permeability_IAA, Nµ, kdil, kconstitutive, kdegrad, kinhibition
+	params = permeability_IAAH, fIAAH_w, conc_out, fIAAH_c, pm_thickness, permeability_IAA, Nu, kdil, kconstitutive, kdegrad, kinhibition
 
 	s_daughter1a = odeint(sdot_daughter1a, s0_daughter1a, t_daughter1a, args=(params,))
 
@@ -167,7 +167,7 @@ def assymetrical_cell_division():
 
 
 	s0_daughter1b = AUXIN_bud[-1]*daughter1b_split, REPRESSOR_bud[-1]*daughter1b_split, VIOLACEIN_bud[-1]*daughter1b_split, 0, daughter1b_initial_volume
-	params = permeability_IAAH, fIAAH_w, conc_out, fIAAH_c, pm_thickness, permeability_IAA, Nµ, kdil, kconstitutive, kdegrad, kinhibition
+	params = permeability_IAAH, fIAAH_w, conc_out, fIAAH_c, pm_thickness, permeability_IAA, Nu, kdil, kconstitutive, kdegrad, kinhibition
 
 	s_daughter1b = odeint(sdot_daughter1b, s0_daughter1b, t_daughter1b, args=(params,))
 
